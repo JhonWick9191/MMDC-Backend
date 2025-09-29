@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt")
 
-const userModel = require("../Models/model");
+const userModel = require("../Models/UserModel");
 
 // signup route handler 
 
@@ -8,7 +8,7 @@ async function signup(req ,res){
 
     try{
 
-        const {firstName ,  email ,   password, role } = req.body
+        const { firstName ,  email ,   password, confrim_password,  role , aditional_info , image , products } = req.body
 
         // Perfrom some validation while in sighup
         
@@ -23,14 +23,23 @@ async function signup(req ,res){
             })
          }
 
-           // 2- validation if any of them is empty while signup then through the error 
+         // 2- validation if any of them is empty while signup then through the error 
 
-        if(!firstName || !email || !password || !role){
+        if(!firstName || !email || !password || !role || !confrim_password ){
             res.status(500).json({
                 sucess:false,
                  message:"Please Fill All the necessary details"
             })
         }
+
+    // 2.1 -  comparing both password [password  === confrim password ]
+
+    if(password !== confrim_password){
+       return res.status(500).json({
+            sucess:false,
+            message:"Password does't match please try again "
+        })
+    }
 
      // 3 - hasing the password 
     
@@ -40,6 +49,7 @@ async function signup(req ,res){
         hasingPassword = await bcrypt.hash(password , 10 )
         console.log(hasingPassword)
         console.log("Your Password has been hashed ")
+
     }catch(error){
 
         console.log("There is getting problem while hasing the password ")

@@ -3,46 +3,45 @@ const UserModel = require("../Models/UserModel");
 
 require("dotenv").config();
 
-async function auth(req,res ,next) {
+async function auth(req , res , next ) {
 
     try{
 
-        // extract code 
-        const token = req.cookied.token 
+        // extract token form request body 
+        const token = req.cookies.token 
                         || req.body.token
-                        || req.header("Authorisation").replace("Bearer", " ");
+                        || req.header("Authorization").replace("Bearer ", " ");
 
-        // if toekn is missing 
-
+        // if token  is missing 
         if(!token){ 
-            return res.status(401).json({
+            return res.status(500).json({
                 success:false,
+                message:" Toekn is missing "
             })           
         }
 
-        // verify the token 
+        // verify the token by using verify method 
         try{
-            const decode =  JWT.verify(token , process.env.JWT_SECRET )
-            console.log(decode)
-            req.UserModel = decode;
+            const payload =  JWT.verify( token , process.env.JWT_SECRET )
+            console.log(payload)
+
+            // request.userModel --> it contain role with the role we can provide authrization 
+            req.UserModel = payload;
 
         }catch(error){
 
             // varification issue 
-            return res.status(401).josn({
+            return res.status(401).json({
                 success:false,
                 message:"Token is invalid "
             })
-
         }
-
         next();
-
-    }catch(error){
-  
-         return res.status(401).josn({
+    }catch(error){  
+        console.log(error)
+         return res.status(401).json({
                 success:false,
-                message:"Someting went wrong while validation the toekn  "
+                message:"Someting went wrong while validation the token in auth "
             })
 
     }
@@ -78,7 +77,7 @@ async function isVender(req ,res ,next){
 // is admin 
 
 
-async function isadmin(req ,res ,next){
+async function isAdmin(req ,res ,next){
 
     try{
 
@@ -100,5 +99,7 @@ async function isadmin(req ,res ,next){
 
 }
 
+
+module.exports = { isVender , isAdmin , auth}
 
 

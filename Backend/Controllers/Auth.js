@@ -278,7 +278,7 @@ async function login(req, res) {
         }
 
         const token = JWT.sign(payload, process.env.JWT_SECRET, {
-            expiresIn: "2hr"
+            expiresIn: "48hr"
         })
 
         isExistingUser.token = token
@@ -343,7 +343,7 @@ async function changePassword(req,res) {
            
 
             if (!check_password) {
-                return res.status(500).json({
+                return res.status(401).json({
                     success: false,
                     message: "The old password does't match if you are forget the password then please reset the password "
                 })

@@ -2,7 +2,7 @@ const express = require("express");
 const Router = express.Router();
 
 // importing login and signup form Controllers 
-const {signup , login ,  changePassword} = require("../Controllers/Auth");
+const {signup , login ,  changePassword , createAdmin , UserLogin} = require("../Controllers/Auth");
 
 //importing Protected Routes for Vender and Admin 
 
@@ -15,9 +15,17 @@ Router.post("/signup" , signup);
 // login route 
 Router.post("/login" , login )
 
+// Create Admin 
+
+Router.post("/createAdmin", createAdmin)
+
 // chnage password
 
 Router.post("/changePassword", changePassword)
+
+// Route for geting the user data 
+
+Router.get("/profileInfo",UserLogin )
 
 //Protected route 
 
@@ -32,6 +40,9 @@ Router.get("/test" , auth , (req ,res)=>{
     })
 
 })
+
+
+
 
 // 1- Protected rout form is vender 
 

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const UserModel = require("./UserModel");
 
 const productSchema = new mongoose.Schema({
 
@@ -36,10 +37,17 @@ const productSchema = new mongoose.Schema({
     product_discripction:{
         type:String,
         required:true,
+    },
+
+    // a particualr product how many persons are placed the order 
+    
+    user:{
+        type: mongoose.Schema.Types.ObjectId,
+        requried:true,
+        ref:[{UserModel}]
+
     }
-
-
 
 })
 
-module.exports = mongoose.model("Product", productSchema)
+module.exports = mongoose.model("Products", productSchema)

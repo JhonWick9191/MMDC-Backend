@@ -4,6 +4,7 @@ const express = require("express");
 const DbConnection = require("./Config/MongoDb")
 const user = require("./Routes/User")
 const app = express();
+const cors = require("cors")
 
 // importing cookie parser 
 
@@ -22,6 +23,14 @@ const PORT = process.env.PORT || 5000;
 // app also use cookie parser for get the token from the cookies 
 
 app.use(cookiesParser())
+
+
+// adding cros oriign for which we can add frontend to backend 
+
+app.use(cors({
+      origin: ["http://localhost:5173", "http://localhost:3000"],
+    credentials: true
+}))
 
 //creating defalut route 
 

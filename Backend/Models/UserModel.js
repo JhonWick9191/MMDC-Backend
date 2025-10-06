@@ -49,18 +49,24 @@ const userSchema = new mongoose.Schema({
         required:true,
     },
 
+    // otp:{
+    //     type:String,
+    //     required:true,
+    // },
+
     aditional_info: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "Profile",
-    },
+    },   
 
     products: [{
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref:"Products"
 
-    }]
+    }],
+
 
 
 })

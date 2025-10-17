@@ -195,6 +195,7 @@ async function signup(req, res) {
 
         res.status(200).json({
             success: true,
+            token,
             isExistingUser: newUser,            
             message: "You are signup successfully!"
         });
@@ -399,30 +400,25 @@ async function changePassword(req, res) {
             success: false,
             message: "Getting the error while Changing the password please try again "
         })
-
-
     }
 }
-
 
 // function for show user login profile 
 
 async function UserLogin(req , res){
 
     try{
-
         const token = req.cookies.token;
-
         if(!token){
             console.log("Token is not present ")
             res.status(401).json({
                 success:false,
                 message:"Error comes in userLoginCookies beacuse toekn is not present"
-
             })
         }
 
          const decoded = JWT.verify(token, process.env.JWT_SECRET);
+         
          console.log(decoded)
            res.status(200).json({
             success:true,

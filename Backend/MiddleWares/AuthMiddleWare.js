@@ -26,7 +26,7 @@ async function auth(req , res , next ) {
             console.log(payload)
 
             // request.userModel --> it contain role with the role we can provide authrization 
-            req.UserModel = payload;
+            req.user = payload;
 
         }catch(error){
 
@@ -55,7 +55,7 @@ async function isVender(req ,res ,next){
 
     try{
 
-        if(req.UserModel.role !== "Vendor"){
+        if(req.user.role !== "Vendor"){
             return res.status(401).json({
                 success:false,
                 message:"This is the protected route for Venders only "
@@ -81,7 +81,7 @@ async function isAdmin(req ,res ,next){
 
     try{
 
-        if(req.UserModel.role !== "Admin"){
+        if(req.user.role !== "Admin"){
             return res.status(401).json({
                 success:false,
                 message:"This is the protected route for Admin only "

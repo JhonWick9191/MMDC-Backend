@@ -3,6 +3,7 @@
 const express = require("express");
 const DbConnection = require("./Config/MongoDb")
 const user = require("./Routes/User")
+const upload = require("./Routes/UploadeExcelfileRoute")
 const app = express();
 const cors = require("cors")
 
@@ -42,6 +43,9 @@ app.get("/", (req ,res)=>(
 
 app.use("/api/v1" , user )
 
+// adding route from uplode products 
+
+app.use("/api/v1",upload)
 // Port of the app 
 
 app.listen(PORT, ()=>{    

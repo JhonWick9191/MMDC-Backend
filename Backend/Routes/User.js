@@ -8,6 +8,14 @@ const {signup , login ,  changePassword , createAdmin , UserLogin} = require("..
 
 const {isAdmin , isVender , auth } = require("../MiddleWares/AuthMiddleWare")
 
+//importing the order controller 
+
+const {orderDetails} = require("../Controllers/Order")
+
+//importing the order details controller 
+
+const {getUserOrders} = require("../Controllers/OrderProductByUser")
+
 
 // Signup route 
 Router.post("/signup" , signup);
@@ -27,7 +35,17 @@ Router.post("/changePassword", changePassword)
 
 Router.get("/profileInfo",UserLogin )
 
-//Protected route 
+
+// Route for place order 
+
+Router.post("/orderPlaces", auth , isVender ,orderDetails )
+
+
+// Router for getting order detials of user in user Dashboard 
+
+Router.get("/orderDetials" ,auth , isVender , getUserOrders)
+
+//Protected route orderDetails
 
 // test route 
 

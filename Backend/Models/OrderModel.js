@@ -9,14 +9,14 @@ const orderSchema = new mongoose.Schema({
     products: [
         {
             product_id: { type: Number }, // original product id
-            name: {
+            Product_Name: {
                 type: String,
-                required: true
+                
             },
-            model: {
+            product_model: {
                 type: String
             },
-            image: {
+             product_image: {
                 type: String
             },
             insideImages: [

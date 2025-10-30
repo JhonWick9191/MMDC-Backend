@@ -6,6 +6,7 @@ const user = require("./Routes/User")
 const upload = require("./Routes/UploadeExcelfileRoute")
 const app = express();
 const cors = require("cors")
+const searchRoute = require("./Routes/SearchProductsRoute")
 
 // importing cookie parser 
 
@@ -47,6 +48,10 @@ app.use("/api/v1" , user )
 
 app.use("/api/v1",upload)
 // Port of the app 
+
+// Route for search products 
+
+app.use("/api/v1", searchRoute)
 
 app.listen(PORT, ()=>{    
     console.log(`Server is started asjdon ${PORT}`)

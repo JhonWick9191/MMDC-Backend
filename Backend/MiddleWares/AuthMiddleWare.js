@@ -8,9 +8,9 @@ async function auth(req , res , next ) {
     try{
 
         // extract token form request body 
-        const token = req.cookies.token 
-                        || req.body.token
-                        || req.header("Authorization").replace("Bearer ", " ");
+        let token = req.cookies?.token 
+            || req.body?.token
+            || (req.header("Authorization") ? req.header("Authorization").replace("Bearer ", "").trim() : null);
 
         // if token  is missing 
         if(!token){ 

@@ -21,7 +21,7 @@ async function orderDetails(req, res) {
         // Create order
         const new_order = await OrderModel.create({
             user: userId,
-            products: products, // ✅ pass the products array
+            products: products, //  pass the products array
             totalAmount
         });
 

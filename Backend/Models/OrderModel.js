@@ -10,12 +10,20 @@ const orderSchema = new mongoose.Schema({
         {
             product_id: { type: Number }, // original product id
             Product_Name: {
-                type: String,
-                
+                type: String,                
             },
             product_model: {
                 type: String
             },
+            
+            brand_name :{
+                type:String
+            },
+
+            model_number:{
+              type:String
+            },
+
              product_image: {
                 type: String
             },
@@ -27,10 +35,15 @@ const orderSchema = new mongoose.Schema({
                     four: String
                 }
             ],
-            price: {
+            Product_price: {
                 type: Number,
                 required: true
             },
+             Vendor_price: {
+                type: Number,
+                required: true
+            },
+
             quantity: {
                 type: Number,
                 required: true
@@ -40,8 +53,7 @@ const orderSchema = new mongoose.Schema({
             },
             save: {
                 type: String
-
-            }
+                }
         }
     ],
     totalAmount: {

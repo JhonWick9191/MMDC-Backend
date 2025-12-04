@@ -6,6 +6,7 @@ const ProfileModel = require("../Models/Profile")
 const OTPGenerator = require("otp-generator")
 const JWT = require('jsonwebtoken');
 const UserModel = require("../Models/UserModel");
+const gstNumberModle = require("../Models/GstModel")
 
 require("dotenv").config();
 // send otp function 
@@ -105,11 +106,9 @@ async function signup(req, res) {
             email,
             phone_number,
             password,
+            gst_number,
             confrim_password,
-
         } = req.body;
-
-        // 1 - Validation
 
         if (!first_name || !email || !password || !confrim_password || !phone_number) {
             return res.status(500).json({
@@ -118,7 +117,6 @@ async function signup(req, res) {
             });
         }
 
-        // 2 - Password match
         if (password !== confrim_password) {
             return res.status(500).json({
                 success: false,
@@ -126,7 +124,13 @@ async function signup(req, res) {
             });
         }
 
-        // 2.1 - Check if user already exists
+        if (!gst_number) {
+            return res.status(500).json({
+                success: false,
+                message: "Please  enter GST number "
+            });
+        }
+
         const existingUser = await userModel.findOne({ email });
         if (existingUser) {
             return res.status(500).json({
@@ -135,20 +139,8 @@ async function signup(req, res) {
             });
         }
 
-        // 3 - Hash the password
-        let hashedPassword;
-        try {
-            hashedPassword = await bcrypt.hash(password, 10);
-            console.log("Password hashed successfully");
-        } catch (error) {
-            console.log("Error hashing password", error);
-            return res.status(500).json({
-                success: false,
-                message: "Problem while hashing the password"
-            });
-        }
+        let hashedPassword = await bcrypt.hash(password, 10);
 
-        // 4 - Create additional profile info
         const new_profile = await ProfileModel.create({
             gender: "Male",
             alternet_phone_number: "890987878",
@@ -156,48 +148,38 @@ async function signup(req, res) {
             about_user: "null"
         });
 
-        // 5 - Create user
         const newUser = await userModel.create({
             first_name,
             last_name,
             email,
             password: hashedPassword,
             role: "Vendor",
+            gst_number,
             phone_number,
             aditional_info: new_profile._id,
             image: `https://api.dicebear.com/5.x/initials/svg?seed=${first_name}${last_name}`,
+            isApproved: false,
+            isActive: false,
+            status: "pending",
         });
 
-        // 6 - Generate JWT token
-
+        // ---------------- TOKEN GENERATE HERE ----------------
         const payload = {
-            id: newUser._id,
             email: newUser.email,
+            id: newUser._id,
             role: newUser.role
         };
 
         const token = JWT.sign(payload, process.env.JWT_SECRET, {
-            expiresIn: "48h"
+            expiresIn: "48hr"
         });
-
-
-        // 7 - Send response with token
-        newUser.password = null; // for security
-
-        // Creating a jwt cookies 
-
-        res.cookie("token" , token , {
-            httpOnly:true,
-            secure:process.env.NODE_ENV === "production",
-            sameSite:"strict",
-            maxAge: 3 * 24 * 60 * 60 * 1000
-        })
+        // --------------------------------------------------------
 
         res.status(200).json({
             success: true,
+            message: "Signup successful! Waiting for admin approval.",
             token,
-            isExistingUser: newUser,            
-            message: "You are signup successfully!"
+            userId: newUser._id
         });
 
     } catch (error) {
@@ -208,6 +190,8 @@ async function signup(req, res) {
         });
     }
 }
+
+
 
 
 // function login 
@@ -225,7 +209,7 @@ async function login(req, res) {
 
         // Pehle userModel me check karo
         let isExistingUser = await userModel.findOne({ email });
-        let role = null;
+   
 
         // Agar userModel me nahi hai to AdminModel me check karo
         if (isExistingUser) {
@@ -253,6 +237,17 @@ async function login(req, res) {
                 message: "Password does't match please try again"
             });
         }
+
+        // Agar user hai aur admin ne approve nahi kiya
+        if (role !== "Admin") {          // Admin ko rokna nahi hai
+            if (!isExistingUser.isApproved) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Admin approval pending hai. Jab tak admin approve nahi karta, login allowed nahi hai."
+                });
+            }
+        }
+
 
         // JWT payload
         const payload = {
@@ -291,7 +286,7 @@ async function login(req, res) {
 
 async function createAdmin(req, res) {
     try {
-        const { email,password,first_name,last_name ,image } = req.body;
+        const { email, password, first_name, last_name, image } = req.body;
 
         // Check if admin already exists
         const existingAdmin = await AdminModel.findOne({ email });
@@ -405,37 +400,37 @@ async function changePassword(req, res) {
 
 // function for show user login profile 
 
-async function UserLogin(req , res){
+async function UserLogin(req, res) {
 
-    try{
+    try {
         const token = req.cookies.token;
-        if(!token){
+        if (!token) {
             console.log("Token is not present ")
             res.status(401).json({
-                success:false,
-                message:"Error comes in userLoginCookies beacuse toekn is not present"
+                success: false,
+                message: "Error comes in userLoginCookies beacuse toekn is not present"
             })
         }
 
-         const decoded = JWT.verify(token, process.env.JWT_SECRET);
-         
-         console.log(decoded)
-           res.status(200).json({
-            success:true,
-            user:decoded,
-            message:"Token present "
-           })
+        const decoded = JWT.verify(token, process.env.JWT_SECRET);
 
-    }catch(error){
+        console.log(decoded)
+        res.status(200).json({
+            success: true,
+            user: decoded,
+            message: "Token present "
+        })
+
+    } catch (error) {
         console.log("Geeting error in Userlogin function")
         console.log(error)
         res.status(500).json({
-            success:false,
-            message:"Getting error while geting the userLogin details"
+            success: false,
+            message: "Getting error while geting the userLogin details"
 
         })
     }
 
 }
 
-module.exports = { signup, login, changePassword, createAdmin , UserLogin };
+module.exports = { signup, login, changePassword, createAdmin, UserLogin };

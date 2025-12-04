@@ -8,12 +8,17 @@ const app = express();
 const cors = require("cors")
 const searchRoute = require("./Routes/SearchProductsRoute")
 
+
+
+
 // importing cookie parser 
 
 const cookiesParser = require("cookie-parser");
 
 
-
+// import route 
+const gstExcleRoute = require("./Routes/gstUploadeCloude")
+app.use("/api/v1", gstExcleRoute)
 // getting env content 
 require("dotenv").config();
 
@@ -30,9 +35,13 @@ app.use(cookiesParser())
 // adding cros oriign for which we can add frontend to backend 
 
 app.use(cors({
-      origin: ["http://localhost:5173", "http://localhost:3000"],
-    credentials: true
+      origin: ["http://localhost:5173", "http://localhost:3000" , "*"],
+      credentials: true
 }))
+
+// approve user by admin  
+const approveUser = require("./Routes/ApproveUserRoute")
+app.use("/api/v1", approveUser)
 
 //creating defalut route 
 

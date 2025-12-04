@@ -16,7 +16,7 @@ const excelDataShema = new mongoose.Schema({
   image_03:String,
   image_04:String,
   image_05:String,
-
+  
   VenderTex_Rate:Number,
   Product_price:Number,
   Vendor_price:Number,

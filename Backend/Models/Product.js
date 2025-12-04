@@ -44,8 +44,7 @@ const productSchema = new mongoose.Schema({
     user:{
         type: mongoose.Schema.Types.ObjectId,
         requried:true,
-        ref:[{UserModel}]
-
+        ref:"UserModel"
     }
 
 })

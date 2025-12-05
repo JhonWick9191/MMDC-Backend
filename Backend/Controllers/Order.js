@@ -72,7 +72,7 @@ async function orderDetails(req, res) {
 
         res.status(200).json({
             success: true,
-            message: "Order Placed successfully !!!!!!!!!!!",
+            message: "Order Placed successfully ",
             order: new_order,
          
         });

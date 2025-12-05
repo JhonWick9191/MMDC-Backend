@@ -35,7 +35,7 @@ app.use(cookiesParser())
 // adding cros oriign for which we can add frontend to backend 
 
 app.use(cors({
-      origin: ["http://localhost:5173", "http://localhost:3000" ,"https://mmdc-frontend-20.onrender.com", "*"],
+      origin: ["http://localhost:5173", "http://localhost:3000" ,"https://mmdc-frontend-20.onrender.com", "https://mmdc-frontend-102.onrender.com/",*"],
       credentials: true
 }))
 

@@ -262,12 +262,16 @@ async function login(req, res) {
         isExistingUser.image = isExistingUser.image || "https://via.placeholder.com/40";
 
         // Set cookie
+        const isProduction = process.env.NODE_ENV === "production";
+
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-            maxAge: 48 * 60 * 60 * 1000 // 48 hours
+            secure: isProduction,              // Render pe true
+            sameSite: isProduction ? "none" : "lax", // exactly small 'none'
+            path: "/",
+            maxAge: 48 * 60 * 60 * 1000
         });
+
 
         return res.status(200).json({
             success: true,

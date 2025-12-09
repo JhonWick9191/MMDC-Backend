@@ -8,12 +8,15 @@ const passKey = process.env.PASS_KEY;
 
 // Email transporter setup
 const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: Email,
-        pass: passKey,
-    }
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // true for 465, false for 587
+  auth: {
+    user: Email,
+    pass: passKey,
+  },
 });
+
 
 async function generateOrderPDF(order) {
     return new Promise((resolve, reject) => {

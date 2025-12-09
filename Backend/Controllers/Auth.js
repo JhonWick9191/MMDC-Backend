@@ -249,6 +249,7 @@ async function login(req, res) {
         const payload = {
             email: isExistingUser.email,
             id: isExistingUser._id,
+           
             role
         };
 
@@ -277,6 +278,7 @@ async function login(req, res) {
             success: true,
             isExistingUser: isExistingUser,
             role,
+            token,
             message: `Login successful as ${role}`
         });
 

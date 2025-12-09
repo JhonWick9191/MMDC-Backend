@@ -77,7 +77,7 @@ async function orderDetails(req, res) {
 
         // email function for order place 
         // console.log(new_order)
-        Sendmail(user,new_order,)
+        Sendmail(user,new_order)
 
 
 

@@ -14,7 +14,7 @@ const searchRoute = require("./Routes/SearchProductsRoute")
 // importing cookie parser 
 
 const cookiesParser = require("cookie-parser");
-
+app.use(cookiesParser())
 
 // import route 
 const gstExcleRoute = require("./Routes/gstUploadeCloude")
@@ -29,14 +29,14 @@ const PORT = process.env.PORT || 5000;
 
 // app also use cookie parser for get the token from the cookies 
 
-app.use(cookiesParser())
+
 
 
 // adding cros oriign for which we can add frontend to backend 
 
 app.use(cors({
-      origin: ["http://localhost:5173", "http://localhost:3000" ,"https://mmdc-frontend-20.onrender.com", "https://mmdc-frontend-102.onrender.com"],
-      credentials: true
+      origin: ["http://localhost:5173", "http://localhost:3000" , "https://mmdc-frontend-102.onrender.com"],
+      credentials: true,
 }))
 
 // approve user by admin  
@@ -58,7 +58,20 @@ app.use("/api/v1" , user )
 app.use("/api/v1",upload)
 // Port of the app 
 
+// logout hander 
+
+// Server.js (tumhare existing code me already hai)
+const logoutRoute = require("./Routes/LogoutRoute");
+app.use("/api/v1", logoutRoute);  // Yeh line already hai
+
+
 // Route for search products 
+
+// get route for user details 
+
+const getUser = require("./Routes/MyRoute")
+
+app.use("/api/v1", getUser)
 
 app.use("/api/v1", searchRoute)
 

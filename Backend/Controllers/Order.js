@@ -8,9 +8,7 @@ async function orderDetails(req, res) {
         const userId = req.user.id;
         const user = req.user.email;
         const { products, totalAmount } = req.body;
-        console.log("User ID:", userId);
-        console.log(user)
-        console.log("Products:", products);
+
 
         if (!products || products.length === 0) {
             return res.status(400).json({

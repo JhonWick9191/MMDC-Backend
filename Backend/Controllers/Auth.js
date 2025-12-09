@@ -203,18 +203,17 @@ async function login(req, res) {
         if (!email || !password) {
             return res.status(400).json({
                 success: false,
-                message: "Email and password are require for enter"
+                message: "Email and password are required"
             });
         }
 
-        // Pehle userModel me check karo
-        
+        // Check in UserModel first
         let isExistingUser = await userModel.findOne({ email });
-   
+        let role = null;
 
-        // Agar userModel me nahi hai to AdminModel me check karo
+        // If not found in User, check Admin
         if (isExistingUser) {
-            role = isExistingUser.role; // "Vendor" ya "User"
+            role = isExistingUser.role;
         } else {
             isExistingUser = await AdminModel.findOne({ email });
             if (isExistingUser) {
@@ -222,61 +221,66 @@ async function login(req, res) {
             }
         }
 
-        // Agar user/admin dono me nahi mila
         if (!isExistingUser) {
             return res.status(401).json({
                 success: false,
-                message: "Email is not exist please signup first"
+                message: "Email does not exist, please signup first"
             });
         }
 
-        // Password match check
-        const userPassord_match = await bcrypt.compare(password, isExistingUser.password);
-        if (!userPassord_match) {
+        // Password check
+        const passwordMatch = await bcrypt.compare(password, isExistingUser.password);
+        if (!passwordMatch) {
             return res.status(401).json({
                 success: false,
-                message: "Password does't match please try again"
+                message: "Password is incorrect"
             });
         }
 
-        // Agar user hai aur admin ne approve nahi kiya
-        if (role !== "Admin") {          // Admin ko rokna nahi hai
-            if (!isExistingUser.isApproved) {
-                return res.status(403).json({
-                    success: false,
-                    message: "Admin approval pending hai. Jab tak admin approve nahi karta, login allowed nahi hai."
-                });
-            }
+        // Approval check for non-admin
+        if (role !== "Admin" && !isExistingUser.isApproved) {
+            return res.status(403).json({
+                success: false,
+                message: "Admin approval pending. Once admin approves, you can login."
+            });
         }
-
 
         // JWT payload
         const payload = {
             email: isExistingUser.email,
             id: isExistingUser._id,
-            role: role
+            role
         };
 
-        const token = JWT.sign(payload, process.env.JWT_SECRET, {
-            expiresIn: "48hr"
+        // Generate token
+        const token = JWT.sign(payload, process.env.JWT_SECRET, { expiresIn: "48h" });
+
+        // Remove sensitive info
+        isExistingUser.password = undefined;
+
+        // Ensure profile image exists
+        isExistingUser.image = isExistingUser.image || "https://via.placeholder.com/40";
+
+        // Set cookie
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+            maxAge: 48 * 60 * 60 * 1000 // 48 hours
         });
 
-        isExistingUser.password = null;
-
-        // Response
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
-            token,
-            isExistingUser,
-            message: `You are logged in as ${role}`
+            isExistingUser: isExistingUser,
+            role,
+            message: `Login successful as ${role}`
         });
 
     } catch (error) {
-        console.log("This error occurs in login function please check it once");
-        console.log(error);
+        console.error("Login error:", error);
         return res.status(500).json({
             success: false,
-            message: "Server did not responce please try again later"
+            message: "Server error, please try again later"
         });
     }
 }
@@ -409,7 +413,7 @@ async function UserLogin(req, res) {
             console.log("Token is not present ")
             res.status(401).json({
                 success: false,
-                message: "Error comes in userLoginCookies beacuse toekn is not present"
+                message: "Error comes in user LoginCookies beacuse toekn is not present"
             })
         }
 

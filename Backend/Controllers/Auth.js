@@ -268,7 +268,7 @@ async function login(req, res) {
         res.cookie("token", token, {
             httpOnly: true,
             secure: isProduction,              // Render pe true
-            sameSite:  "lax", // exactly small 'none'
+            sameSite: isProduction ? "none" : "lax", // exactly small 'none'
             path: "/",
             domain: ".onrender.com",
             maxAge: 48 * 60 * 60 * 1000

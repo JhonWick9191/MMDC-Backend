@@ -21,7 +21,9 @@ async function searchProducts(req, res) {
         { Product_Name: { $regex: word, $options: "i" } },
         { Model_number: { $regex: word, $options: "i" } },
         { Product_Type: { $regex: word, $options: "i" } },
-        { Brand_Name: { $regex: word, $options: "i" } }
+        { Brand_Name: { $regex: word, $options: "i" } },
+        {Product_Category:{ $regex: word, $options: "i" }}
+
       ]
     }));
 

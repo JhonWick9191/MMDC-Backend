@@ -28,7 +28,8 @@ async function ProductUploade(req, res) {
           "Product_price",
           "Vendor_price",
           "VenderTex_Rate",
-          "Product_Quantity"
+          "Product_Quantity",
+         
         ];
 
         if (numberFields.includes(trimmedKey)) {

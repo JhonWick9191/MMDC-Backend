@@ -75,6 +75,10 @@ app.use("/api/v1", getUser)
 
 app.use("/api/v1", searchRoute)
 
+// new products 
+
+const newProducts = require("./Routes/NewProductRoute")
+app.use("/api/v1", newProducts)
 app.listen(PORT, ()=>{    
     console.log(`Server is started asjdon ${PORT}`)
     

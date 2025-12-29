@@ -2,6 +2,7 @@ const mongoose = require("mongoose")
 
 const excelDataShema = new mongoose.Schema({
   product_id:Number,
+  new:String,
   Model_number:String,
   Brand_Name:String,
   Product_Name:String,

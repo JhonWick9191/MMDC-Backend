@@ -1,5 +1,5 @@
-// exporting express 
 
+require("dotenv").config();
 const express = require("express");
 const DbConnection = require("./Config/MongoDb")
 const user = require("./Routes/User")
@@ -20,7 +20,7 @@ app.use(cookiesParser())
 const gstExcleRoute = require("./Routes/gstUploadeCloude")
 app.use("/api/v1", gstExcleRoute)
 // getting env content 
-require("dotenv").config();
+
 
 const PORT = process.env.PORT || 5000; 
 
@@ -35,7 +35,8 @@ const PORT = process.env.PORT || 5000;
 // adding cros oriign for which we can add frontend to backend 
 
 app.use(cors({
-      origin: ["http://localhost:5173", "http://localhost:3000","https://musicandmore.co.in"],
+
+      origin: ["http://localhost:5173", "http://localhost:3000","https://www.musicandmore.co.in"],
       credentials: true,
 }))
 

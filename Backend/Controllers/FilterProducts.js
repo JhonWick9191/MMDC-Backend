@@ -5,51 +5,51 @@ async function filterProducts(req, res) {
   try {
     const { type, brand, subCategory, page = 1, limit = 20, sort = "asc" } = req.query;
 
-    const skip = (page - 1) * limit;
-
     if (!type) {
       return res.status(400).json({ success: false, message: "Product type is required" });
     }
 
-    const filterObj = { Product_Type: type };
+    const skip = (page - 1) * limit;
 
-    // ✅ brand filter
+    // Case-insensitive type filter
+    const filterObj = { Product_Type: { $regex: `^${type}$`, $options: "i" } };
+
+    // Brand filter
     if (brand) filterObj.Brand_Name = brand;
 
-    // ✅ category filter
+    // Category filter
     if (subCategory) filterObj.Product_Category = subCategory;
 
-    // 1️⃣ Paginated products with sort
+    // 1️⃣ Paginated & sorted products
     const filterProducts = await Porducts.find(filterObj)
       .sort({ Product_price: sort === "asc" ? 1 : -1 })
       .skip(Number(skip))
       .limit(Number(limit));
 
-    if (filterProducts.length === 0) {
-      return res.status(404).json({ success: false, message: "No products found" });
-    }
-
     // 2️⃣ Total products count
     const totalProducts = await Porducts.countDocuments(filterObj);
 
-    // 3️⃣ Total brands + their counts
+    // 3️⃣ Brands + counts (case-insensitive type match)
     const brandAggregate = await Porducts.aggregate([
-      { $match: { Product_Type: type } },
+      { $match: { Product_Type: { $regex: `^${type}$`, $options: "i" } } },
       { $group: { _id: "$Brand_Name", count: { $sum: 1 } } },
     ]);
+
     const totalBrands = brandAggregate.map(b => b._id);
     const brandCount = {};
     brandAggregate.forEach(b => { brandCount[b._id] = b.count; });
 
-    // 4️⃣ Total categories + their counts
+    // 4️⃣ Categories + counts (case-insensitive type match)
     const categoryAggregate = await Porducts.aggregate([
-      { $match: { Product_Type: type } },
+      { $match: { Product_Type: { $regex: `^${type}$`, $options: "i" } } },
       { $group: { _id: "$Product_Category", count: { $sum: 1 } } },
     ]);
+
     const totalCategories = categoryAggregate.map(c => c._id);
     const categoryCount = {};
     categoryAggregate.forEach(c => { categoryCount[c._id] = c.count; });
 
+    // 5️⃣ Send response
     res.status(200).json({
       success: true,
       message: filterProducts,

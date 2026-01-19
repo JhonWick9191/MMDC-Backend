@@ -35,7 +35,7 @@ const PORT = process.env.PORT || 5000;
 // adding cros oriign for which we can add frontend to backend 
 
 app.use(cors({
-      origin: ["http://localhost:5173", "http://localhost:3000","https://musicandmore.co.in"],
+      origin: ["http://localhost:5173", "http://localhost:3000","https://musicandmore.co.in","https://www.musicandmore.co.in"],
       credentials: true,
 }))
 

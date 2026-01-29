@@ -8,6 +8,8 @@ const excelDataShema = new mongoose.Schema({
   Product_Name:String,
   Product_Type:String,
   Product_Category:String,
+  Product_Subcategory:String,
+
   Product_Discripction:String,
 
   Product_Quantity:Number,

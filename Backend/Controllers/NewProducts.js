@@ -12,9 +12,7 @@ async function NewProduct(req ,res) {
                 success:false,
                 message:"Product not found "           
             })
-        }
-
-                   
+        }                
    
 
 

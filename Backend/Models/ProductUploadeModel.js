@@ -6,7 +6,10 @@ const excelDataShema = new mongoose.Schema({
   Model_number: {
   type: String,
   required: true,
-    minlength: 1 ,
+  minlength: 1,
+  $exists: true,  
+  $ne: null,       
+  $ne: "" ,
 },
 
   Brand_Name:String,

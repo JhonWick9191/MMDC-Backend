@@ -72,9 +72,13 @@ async function ProductUploade(req, res) {
 
 
 // ✅ Get all Excel data
+// ✅ Get all Excel data (exclude null / empty Model_number)
 async function getAllExcelData(req, res) {
   try {
-    const allData = await excelModel.find();
+    const allData = await excelModel.find({
+      Model_number: { $exists: true, $ne: null, $ne: "" }
+    });
+
     console.log("All Excel Data:", allData);
 
     res.status(200).json({
@@ -89,5 +93,6 @@ async function getAllExcelData(req, res) {
     });
   }
 }
+
 
 module.exports = { ProductUploade, getAllExcelData };

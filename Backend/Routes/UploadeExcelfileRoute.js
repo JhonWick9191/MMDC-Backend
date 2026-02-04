@@ -12,7 +12,7 @@ Router.post("/upload", upload.single("file"), ProductUploade);
 
 Router.get("/allProducts" , getAllExcelData)
 
-// get product data as product type
+// get product data as product type 
 
 Router.get("/categoryProduct", filterProducts )
 

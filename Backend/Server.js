@@ -37,7 +37,7 @@ app.use(express.json());
 // adding cros oriign for which we can add frontend to backend 
 
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:3000", "https://musicandmore.co.in", "https://www.musicandmore.co.in"],
+    origin: ["https://musicandmore.co.in", "https://www.musicandmore.co.in"],
     credentials: true,
 }))
 

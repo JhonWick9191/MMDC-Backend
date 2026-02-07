@@ -1,100 +1,89 @@
-
 require("dotenv").config();
 const express = require("express");
-const DbConnection = require("./Config/MongoDb")
-const user = require("./Routes/User")
-const upload = require("./Routes/UploadeExcelfileRoute")
-const app = express();
-const cors = require("cors")
-const searchRoute = require("./Routes/SearchProductsRoute")
-const adminDashboardRoute = require("./Routes/AdminDashboardRoute")
-
-app.use(cors({
-    origin: ["https://musicandmore.co.in", "https://www.musicandmore.co.in"],
-    credentials: true,
-}))
-
-
-
-// importing cookie parser 
-
+const cors = require("cors");
 const cookiesParser = require("cookie-parser");
-app.use(cookiesParser())
 
-// import route 
-const gstExcleRoute = require("./Routes/gstUploadeCloude")
-app.use("/api/v1", gstExcleRoute)
-// getting env content 
+const DbConnection = require("./Config/MongoDb");
 
+const user = require("./Routes/User");
+const upload = require("./Routes/UploadeExcelfileRoute");
+const searchRoute = require("./Routes/SearchProductsRoute");
+const adminDashboardRoute = require("./Routes/AdminDashboardRoute");
+const approveUser = require("./Routes/ApproveUserRoute");
+const gstExcleRoute = require("./Routes/gstUploadeCloude");
+const logoutRoute = require("./Routes/LogoutRoute");
+const getUser = require("./Routes/MyRoute");
+const newProducts = require("./Routes/NewProductRoute");
 
+const app = express();
 const PORT = process.env.PORT || 5000;
 
-// adding parser for while geting req form body it is responsible for pass data from request body to the backend 
+/* =========================
+   ✅ CORS FIX (MOST IMPORTANT)
+   ========================= */
+const allowedOrigins = [
+  "https://musicandmore.co.in",
+  "https://www.musicandmore.co.in",
+  "http://localhost:5173"
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+
+
+/* =========================
+   Parsers (after CORS)
+   ========================= */
 app.use(express.json());
+app.use(cookiesParser());
 
-// app also use cookie parser for get the token from the cookies 
+/* =========================
+   Routes
+   ========================= */
+app.use("/api/v1", gstExcleRoute);
+app.use("/api/v1", approveUser);
+app.use("/api/v1", user);
+app.use("/api/v1", upload);
+app.use("/api/v1", logoutRoute);
+app.use("/api/v1", getUser);
+app.use("/api/v1", searchRoute);
+app.use("/api/v1", newProducts);
+app.use("/api/v1/admin/dashboard", adminDashboardRoute);
 
+/* =========================
+   Default route
+   ========================= */
+app.get("/", (req, res) => {
+  res.send("This is by default route");
+});
 
-
-
-// adding cros oriign for which we can add frontend to backend 
-
-
-
-// approve user by admin  
-const approveUser = require("./Routes/ApproveUserRoute")
-app.use("/api/v1", approveUser)
-
-//creating defalut route 
-
-app.get("/", (req, res) => (
-    res.send("This is by defaul route ")
-))
-
-// adding Routes 
-
-app.use("/api/v1", user)
-
-// adding route from uplode products 
-
-app.use("/api/v1", upload)
-// Port of the app 
-
-// logout hander 
-
-// Server.js (tumhare existing code me already hai)
-const logoutRoute = require("./Routes/LogoutRoute");
-app.use("/api/v1", logoutRoute);  // Yeh line already hai
-
-
-// Route for search products 
-
-// get route for user details 
-
-const getUser = require("./Routes/MyRoute")
-
-app.use("/api/v1", getUser)
-
-app.use("/api/v1", searchRoute)
-
-// new products 
-
-const newProducts = require("./Routes/NewProductRoute")
-app.use("/api/v1", newProducts)
-app.use("/api/v1/admin/dashboard", adminDashboardRoute)
-
+/* =========================
+   Server start
+   ========================= */
 app.listen(PORT, () => {
-    console.log(`Server is started asjdon ${PORT}`)
+  console.log(`Server is started on port ${PORT}`);
+});
 
-})
-
-
-// making  db connection 
-
+/* =========================
+   DB Connection
+   ========================= */
 DbConnection();
 
-// Initialize birthday email scheduler
+/* =========================
+   Birthday Email Scheduler
+   ========================= */
 const { initializeBirthdayScheduler } = require("./schedulers/BirthdayScheduler");
 initializeBirthdayScheduler();
-
-

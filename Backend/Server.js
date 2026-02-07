@@ -93,4 +93,8 @@ app.listen(PORT, () => {
 
 DbConnection();
 
+// Initialize birthday email scheduler
+const { initializeBirthdayScheduler } = require("./schedulers/BirthdayScheduler");
+initializeBirthdayScheduler();
+
 

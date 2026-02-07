@@ -105,12 +105,13 @@ async function signup(req, res) {
             last_name,
             email,
             phone_number,
+            dateOfBirth,
             password,
             gst_number,
             confrim_password,
         } = req.body;
 
-        if (!first_name || !email || !password || !confrim_password || !phone_number) {
+        if (!first_name || !email || !password || !confrim_password || !phone_number || !dateOfBirth) {
             return res.status(500).json({
                 success: false,
                 message: "Please Fill All the necessary details"
@@ -156,6 +157,7 @@ async function signup(req, res) {
             role: "Vendor",
             gst_number,
             phone_number,
+            dateOfBirth,
             aditional_info: new_profile._id,
             image: `https://api.dicebear.com/5.x/initials/svg?seed=${first_name}${last_name}`,
             isApproved: false,

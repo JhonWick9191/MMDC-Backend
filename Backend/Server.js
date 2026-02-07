@@ -9,7 +9,10 @@ const cors = require("cors")
 const searchRoute = require("./Routes/SearchProductsRoute")
 const adminDashboardRoute = require("./Routes/AdminDashboardRoute")
 
-
+app.use(cors({
+    origin: ["https://musicandmore.co.in", "https://www.musicandmore.co.in"],
+    credentials: true,
+}))
 
 
 
@@ -36,10 +39,7 @@ app.use(express.json());
 
 // adding cros oriign for which we can add frontend to backend 
 
-app.use(cors({
-    origin: ["https://musicandmore.co.in", "https://www.musicandmore.co.in"],
-    credentials: true,
-}))
+
 
 // approve user by admin  
 const approveUser = require("./Routes/ApproveUserRoute")

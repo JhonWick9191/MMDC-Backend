@@ -22,18 +22,18 @@ const PORT = process.env.PORT || 5000;
    ✅ CORS FIX (MOST IMPORTANT)
    ========================= */
 const allowedOrigins = [
-  "https://musicandmore.co.in",
-  "https://www.musicandmore.co.in",
-  "http://localhost:5173",
-  "http://localhost:5174"
+   "https://musicandmore.co.in",
+   "https://www.musicandmore.co.in",
+   "http://localhost:5173",
+   "http://localhost:5174"
 ];
 
 app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-  })
+   cors({
+      origin: allowedOrigins,
+      credentials: true,
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+   })
 );
 
 
@@ -55,20 +55,20 @@ app.use("/api/v1", logoutRoute);
 app.use("/api/v1", getUser);
 app.use("/api/v1", searchRoute);
 app.use("/api/v1", newProducts);
-app.use("/api/v1/admin/dashboard", adminDashboardRoute);
+app.use("/api/v1", adminDashboardRoute);
 
 /* =========================
    Default route
    ========================= */
 app.get("/", (req, res) => {
-  res.send("This is by default route");
+   res.send("This is by default route");
 });
 
 /* =========================
    Server start
    ========================= */
 app.listen(PORT, () => {
-  console.log(`Server is started on port ${PORT}`);
+   console.log(`Server is started on port ${PORT}`);
 });
 
 /* =========================

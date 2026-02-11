@@ -12,117 +12,136 @@ async function filterProducts(req, res) {
       sort = "asc",
     } = req.query;
 
-    if (!type) {
-      return res.status(400).json({
-        success: false,
-        message: "Product type is required",
-      });
+    const skip = (Number(page) - 1) * Number(limit);
+
+    // 🔹 Dynamic Filter Object
+    const filterObj = {};
+
+    // ✅ Type Filter
+    if (type) {
+      filterObj.Product_Type = {
+        $regex: `^${type.trim()}$`,
+        $options: "i",
+      };
     }
 
-    const skip = (page - 1) * limit;
-
-    // 🔹 Base filter (case-insensitive Product Type)
-    const filterObj = {
-      Product_Type: { $regex: `^${type}$`, $options: "i" },
-    };
-
-    // 🔹 Brand filter
+    // ✅ Brand Filter
     if (brand) {
-      filterObj.Brand_Name = brand.trim();
+      filterObj.Brand_Name = {
+        $regex: `^${brand.trim()}$`,
+        $options: "i",
+      };
     }
 
-    // 🔹 Category OR Subcategory filter (with cleaning)
+    // ✅ SubCategory OR Category Filter
     if (subCategory) {
       const cleanSubCategory = subCategory.trim().replace(/\s+/g, " ");
-      console.log("Selected SubCategory:", cleanSubCategory);
-      console.log(`${cleanSubCategory} -> Product_Category OR Product_Subcategory`);
 
       filterObj.$or = [
-        { Product_Category: { $regex: `^${cleanSubCategory}$`, $options: "i" } },
-        { Product_Subcategory: { $regex: `^${cleanSubCategory}$`, $options: "i" } },
+        {
+          Product_Category: {
+            $regex: `^${cleanSubCategory}$`,
+            $options: "i",
+          },
+        },
+        {
+          Product_Subcategory: {
+            $regex: `^${cleanSubCategory}$`,
+            $options: "i",
+          },
+        },
       ];
     }
 
-    // 1️⃣ Products (pagination + sorting)
+    /* =========================================================
+       1️⃣ Paginated Products (Right Side Products Section)
+    ========================================================== */
+
     const products = await Porducts.find(filterObj)
       .sort({ Product_price: sort === "asc" ? 1 : -1 })
-      .skip(Number(skip))
+      .skip(skip)
       .limit(Number(limit));
 
-    // 2️⃣ Total product count
     const totalProducts = await Porducts.countDocuments(filterObj);
 
-    // 3️⃣ Brand counts
+    /* =========================================================
+       2️⃣ Brand Count (Sidebar)
+    ========================================================== */
+
     const brandAggregate = await Porducts.aggregate([
-      { $match: { Product_Type: { $regex: `^${type}$`, $options: "i" } } },
+      { $match: filterObj },
       { $group: { _id: "$Brand_Name", count: { $sum: 1 } } },
+      { $sort: { _id: 1 } },
     ]);
 
     const brandCount = {};
     brandAggregate.forEach((b) => {
-      if (b._id) brandCount[b._id.trim()] = b.count; // trim spaces
-    });
-
-    // 4️⃣ Category counts
-    const categoryAggregate = await Porducts.aggregate([
-      { $match: { Product_Type: { $regex: `^${type}$`, $options: "i" } } },
-      { $group: { _id: "$Product_Category", count: { $sum: 1 } } },
-    ]);
-
-    const categoryCount = {};
-    const totalCategories = [];
-    categoryAggregate.forEach((c) => {
-      if (c._id) {
-        const cleanCategory = c._id.trim().replace(/\s+/g, " ");
-        categoryCount[cleanCategory] = c.count;
-        totalCategories.push(cleanCategory);
+      if (b._id) {
+        brandCount[b._id.trim()] = b.count;
       }
     });
 
-    // 5️⃣ Category → Subcategory mapping (for UI / debug)
-    const subCategoryAggregate = await Porducts.aggregate([
-      {
-        $match: {
-          Product_Type: { $regex: `^${type}$`, $options: "i" },
-          Product_Subcategory: { $exists: true, $ne: "" },
-        },
-      },
+    /* =========================================================
+       3️⃣ Category Count (Sidebar)
+    ========================================================== */
+
+    const categoryAggregate = await Porducts.aggregate([
+      { $match: filterObj },
+      { $group: { _id: "$Product_Category", count: { $sum: 1 } } },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const categoryCount = {};
+    categoryAggregate.forEach((c) => {
+      if (c._id) {
+        categoryCount[c._id.trim()] = c.count;
+      }
+    });
+
+    /* =========================================================
+       4️⃣ FULL Category → SubCategory Tree (NO PAGINATION)
+       🔥 Ye hi tumhari main problem ka solution hai
+    ========================================================== */
+
+    const categoryTreeAggregate = await Porducts.aggregate([
+      { $match: filterObj },
       {
         $group: {
           _id: "$Product_Category",
           subCategories: { $addToSet: "$Product_Subcategory" },
         },
       },
+      { $sort: { _id: 1 } },
     ]);
 
     const categoryWithSubCategories = {};
-    subCategoryAggregate.forEach((item) => {
+
+    categoryTreeAggregate.forEach((item) => {
       if (item._id) {
-        const cleanCategory = item._id.trim().replace(/\s+/g, " ");
-        const cleanSubCats = item.subCategories.map((sc) =>
-          sc.trim().replace(/\s+/g, " ")
-        );
-        categoryWithSubCategories[cleanCategory] = cleanSubCats;
+        categoryWithSubCategories[item._id.trim()] =
+          item.subCategories
+            .filter((sub) => sub) // remove null
+            .map((sub) => sub.trim());
       }
     });
 
-    // 6️⃣ Final response
+    /* =========================================================
+       5️⃣ Final Response
+    ========================================================== */
+
     res.status(200).json({
       success: true,
-      message: products,
-      data: "Data fetched successfully",
+      products,
       page: Number(page),
       limit: Number(limit),
       totalProducts,
       totalPages: Math.ceil(totalProducts / limit),
-      totalBrands: Object.keys(brandCount).length,
-      totalCategories,
+
       brandCount,
       categoryCount,
-
-      // 🔥 DEBUG / UI data
-      categoryWithSubCategories,
+      categoryWithSubCategories, // 🔥 IMPORTANT
     });
+
   } catch (error) {
     console.error("Error in filterProducts:", error);
     res.status(500).json({

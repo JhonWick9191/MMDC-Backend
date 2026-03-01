@@ -13,7 +13,10 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     confrim_password: { type: String, require: true },
     gst_number: { type: String, require: true },
-
+    company:{
+     type:String,
+     required:true,
+    },
     role: {
         type: String,
         enum: ["Admin", "Vendor"]

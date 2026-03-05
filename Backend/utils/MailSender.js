@@ -5,24 +5,25 @@ async function mailSender(email, title, body) {
 
     try {
 
-        // create transporter
         let transporter = nodemailer.createTransport({
-            host: process.env.mailHost,
+            host: process.env.MAIL_HOST,
+            port: 587,
+            secure: false,
             auth: {
                 user: process.env.MAIL_USER,
                 pass: process.env.PASS_KEY
             }
         });
 
-        // send mail
         let info = await transporter.sendMail({
-            from: `"MMDC Team" <${process.env.MAIL_USER}>`,
+            from: `"Music & More" <${process.env.MAIL_USER}>`,
             to: email,
             subject: title,
             html: body
         });
 
-        console.log("Mail sent successfully:", info.messageId);
+        console.log("Mail sent successfully");
+        console.log(info);
 
     } catch (error) {
 
@@ -30,7 +31,6 @@ async function mailSender(email, title, body) {
         console.log(error);
 
     }
-
 }
 
 module.exports = mailSender;

@@ -1,6 +1,7 @@
 const userModel = require("../Models/UserModel");
-const transporter = require("../utils/MailSender");
+const mailSender = require("../utils/MailSender");
 require("dotenv").config();
+
 async function approveOrDenyUser(req, res) {
     try {
 
@@ -25,24 +26,23 @@ async function approveOrDenyUser(req, res) {
             await user.save();
 
             // Send approval email
-            await transporter.sendMail({
-                from: `"Music & More" <${process.env.MAIL_USER}>`,
-                to: user.email,
-                subject: "Account Approved ✅",
-                html: `
-                    <h2>Hello ${user.first_name},</h2>
-                    <p>🎉 Congratulations!</p>
-                    <p>Your account has been <b>approved</b> by the admin.</p>
-                    <p>You can now login and start using the platform.</p>
-                    <br/>
-                    <a href="https://musicandmore.co.in/login">
-                        Click here to Login
-                    </a>
-                    <br/><br/>
-                    <p>Regards,</p>
-                    <b>Music & More Team</b>
+            await mailSender(
+                user.email,
+                "Account Approved ✅",
                 `
-            });
+                <h2>Hello ${user.first_name},</h2>
+                <p>🎉 Congratulations!</p>
+                <p>Your account has been <b>approved</b> by the admin.</p>
+                <p>You can now login and start using the platform.</p>
+                <br/>
+                <a href="https://musicandmore.co.in/login">
+                    Click here to Login
+                </a>
+                <br/><br/>
+                <p>Regards,</p>
+                <b>Music & More Team</b>
+                `
+            );
 
             return res.status(200).json({
                 success: true,

@@ -134,17 +134,22 @@ async function signup(req, res) {
         }
 
         // cehck gst number is present or not in our DB
+        console.log(gstNumberModle)
+        const gst = gst_number.trim().toUpperCase();
 
-        const isGstExist = await gstNumberModle.findOne({gst_number : gst_number})
+const isGstExist = await gstNumberModle.findOne({
+    gstNumber: gst_number
+});
 
-        if (!isGstExist == gst_number){
-            return res.status(500).json({
-                sucess:false,
-                message:"Your Gst number is not exist please contact us ",
-                 
-            })
-                }
+console.log("User GST:", gst);
+console.log("DB result:", isGstExist);
 
+if (!isGstExist) {
+    return res.status(400).json({
+        success: false,
+        message: "Your Gst number is not exist please contact us"
+    });
+}
         const existingUser = await userModel.findOne({ email });
         if (existingUser) {
             return res.status(500).json({

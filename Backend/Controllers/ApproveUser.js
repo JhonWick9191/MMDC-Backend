@@ -1,5 +1,5 @@
 const userModel = require("../Models/UserModel");
-const transporter = require("../config/mailSender");
+const transporter = require("../utils/MailSender");
 require("dotenv").config();
 async function approveOrDenyUser(req, res) {
     try {

@@ -21,17 +21,7 @@ async function approveOrDenyUser(req, res) {
             user.isActive = true;
             await user.save();
 
-            return res.status(200).json({
-                success: true,
-                message: "User approved successfully!"
-            });
-
-
-
-        }
-
-
-        await mailSender(
+              await mailSender(
             user.email,
             "Your ID has been verified. You can now login",
             `
@@ -57,6 +47,18 @@ async function approveOrDenyUser(req, res) {
   </div>
   `
         );
+
+            return res.status(200).json({
+                success: true,
+                message: "User approved successfully!"
+            });
+
+
+
+        }
+
+
+      
 
         // DENY → DELETE USER
         if (action === "deny") {

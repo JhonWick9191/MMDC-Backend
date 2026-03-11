@@ -144,19 +144,19 @@ async function signup(req, res) {
         console.log("User GST:", gst);
         console.log("DB result:", isGstExist);
 
-        // if (!isGstExist) {
-        //     return res.status(400).json({
-        //         success: false,
-        //         message: "Your Gst number is not exist please contact us"
-        //     });
-        // }
-        // const existingUser = await userModel.findOne({ email });
-        // if (existingUser) {
-        //     return res.status(500).json({
-        //         success: false,
-        //         message: "User already present, please login"
-        //     });
-        // }
+        if (!isGstExist) {
+            return res.status(400).json({
+                success: false,
+                message: "Your Gst number is not exist please contact us"
+            });
+        }
+        const existingUser = await userModel.findOne({ email });
+        if (existingUser) {
+            return res.status(500).json({
+                success: false,
+                message: "User already present, please login"
+            });
+        }
 
         let hashedPassword = await bcrypt.hash(password, 10);
 

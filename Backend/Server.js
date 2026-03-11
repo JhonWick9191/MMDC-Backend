@@ -18,6 +18,7 @@ const newProducts = require("./Routes/NewProductRoute");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+
 /* =========================
    ✅ CORS FIX (MOST IMPORTANT)
    ========================= */
@@ -38,6 +39,8 @@ app.use(
 
 app.options(/.*/, cors());
 
+console.log(process.env.MAIL_USER);
+console.log(process.env.PASS_KEY);
 
 /* =========================
    Parsers (after CORS)

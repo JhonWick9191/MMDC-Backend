@@ -12,4 +12,5 @@ Router.get("/user-count", auth, isAdmin, getTotalUserCount);
 Router.get("/category-counts", auth, isAdmin, getCategoryWiseProductCount);
 Router.get("/orders", auth, isAdmin, getAdminOrders);
 
+
 module.exports = Router;

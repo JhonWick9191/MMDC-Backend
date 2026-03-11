@@ -1,5 +1,6 @@
 // only get list of users who are not approved
-const userModel  = require("../Models/UserModel")
+const { currentLineHeight } = require("pdfkit");
+const userModel = require("../Models/UserModel")
 async function getPendingUsers(req, res) {
     try {
         const users = await userModel.find({ isApproved: false });
@@ -18,4 +19,28 @@ async function getPendingUsers(req, res) {
     }
 }
 
-module.exports = { getPendingUsers };
+async function GettingAlluser(req, res) {
+    try {
+
+        const loginUser = await userModel.find({}, { email: 1 })
+
+        console.log("Getting all user")
+        console.log(loginUser)
+
+        return res.status(200).json({
+            sucess: true,
+            message: "Getting all user data",
+            email:loginUser
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            sucess: false,
+            message: "Getting error while fetching email of all user "
+        })
+
+    }
+}
+
+module.exports = { getPendingUsers, GettingAlluser };

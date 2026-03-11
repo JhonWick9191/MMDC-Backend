@@ -8,13 +8,13 @@ async function mailSender(email, title, body) {
 
         let transporter = nodemailer.createTransport({
 
-            host: "smtp-relay.brevo.com",
+            host: process.env.MAIL_HOST,
             port: 587,
             secure: false,
             tls: { rejectUnauthorized: false },
             auth: {
-                user: "a497f6001@smtp-brevo.com",
-                pass: "bskxlvfgk2ODK0F"
+                user:process.env.MAIL_USER ,
+                pass:process.env.PASS_KEY
             }
         })  
 

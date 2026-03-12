@@ -7,7 +7,7 @@ async function mailSender(email, title, body) {
         try {
             let transporter = nodemailer.createTransporter({
                 host: process.env.MAIL_HOST,
-                port: 587,
+                port: 2525,
                 secure: false,
                 tls: { rejectUnauthorized: false },
                 auth: {

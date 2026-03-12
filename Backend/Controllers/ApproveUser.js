@@ -21,32 +21,32 @@ async function approveOrDenyUser(req, res) {
             user.isActive = true;
             await user.save();
 
-//             await mailSender(
-//                 user.email,
-//                 "Your ID has been verified. You can now login",
-//                 `
-//   <div style="font-family: Arial, sans-serif; text-align:center;">
+            await mailSender(
+                user.email,
+                "Your ID has been verified. You can now login",
+                `
+  <div style="font-family: Arial, sans-serif; text-align:center;">
     
-//     <img 
-//       src="https://pub-2b1f343884754239835449d2250d43a1.r2.dev/2.png"
-//       alt="Music and More"
-//       style="width:100%; max-width:600px; border-radius:8px;"
-//     />
+    <img 
+      src="https://pub-2b1f343884754239835449d2250d43a1.r2.dev/2.png"
+      alt="Music and More"
+      style="width:100%; max-width:600px; border-radius:8px;"
+    />
 
-//     <h1>Welcome ${user.first_name} 🎵</h1>
+    <h1>Welcome ${user.first_name} 🎵</h1>
 
-//     <p>Your ID has been verified successfully.</p>
+    <p>Your ID has been verified successfully.</p>
 
-//     <p>You can now login and explore <b>Music and More</b>.</p>
+    <p>You can now login and explore <b>Music and More</b>.</p>
 
-//     <a href="https://musicandmore.co.in/login"
-//       style="display:inline-block; margin-top:20px; padding:12px 25px; background:#ff6b00; color:white; text-decoration:none; border-radius:5px;">
-//       Login Now
-//     </a>
+    <a href="https://musicandmore.co.in/login"
+      style="display:inline-block; margin-top:20px; padding:12px 25px; background:#ff6b00; color:white; text-decoration:none; border-radius:5px;">
+      Login Now
+    </a>
 
-//   </div>
-//   `
-//             );
+  </div>
+  `
+            );
 
             return res.status(200).json({
                 success: true,

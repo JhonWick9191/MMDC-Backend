@@ -1,21 +1,20 @@
-const nodemailer = require("nodemailer")
+const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 async function mailSender(email, title, body) {
     // Background email - crash nahi karega
     (async () => {
         try {
-            let transporter = nodemailer.createTransporter({
+            let transporter = nodemailer.createTransport({
                 host: process.env.MAIL_HOST,
-                port: 2525,
-                secure: false,
+                port: 2525,             // Use working port
+                secure: false,          // TLS false for port 2525
                 tls: { rejectUnauthorized: false },
                 auth: {
-                    user: process.env.MAIL_USER,  // a497601@smtp-brevo.com
-                    pass: process.env.PASS_KEY    // Brevo SMTP key
+                    user: process.env.MAIL_USER,   // Brevo SMTP user
+                    pass: process.env.PASS_KEY     // Brevo SMTP key
                 },
-                // SERVER TIMEOUT SHORT
-                connectionTimeout: 5000,  // 5 sec only
+                connectionTimeout: 5000,
                 socketTimeout: 5000,
                 greetingTimeout: 5000
             });
@@ -29,7 +28,6 @@ async function mailSender(email, title, body) {
 
             console.log("✅ Email sent:", info.messageId);
         } catch (error) {
-            // SILENT FAIL - controller crash nahi hoga
             console.log("⚠️ Email failed (not critical):", error.message);
         }
     })();

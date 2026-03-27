@@ -5,16 +5,14 @@ async function NewProduct(req ,res) {
 
     try{
 
-        const Products = await ProductModel.find({new : "yes"})
+        const Products = await ProductModel.find({new : "yes"}).sort({ _id: -1 })
         
         if(!Products){
             res.status(500).json({
                 success:false,
-                message:"Product not found "           
+                message:"Product not found"           
             })
-        }                
-   
-
+        }      
 
         res.status(200).json({
             sucess:true,

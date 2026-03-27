@@ -250,7 +250,8 @@ async function login(req, res) {
         }
 
         // Password check
-        const passwordMatch = await bcrypt.compare(password, isExistingUser.password);
+        const passwordMatch = await bcrypt.compare(password, isExistingUser.password); 
+
         if (!passwordMatch) {
             return res.status(401).json({
                 success: false,
@@ -270,7 +271,6 @@ async function login(req, res) {
         const payload = {
             email: isExistingUser.email,
             id: isExistingUser._id,
-
             role
         };
 
@@ -294,6 +294,8 @@ async function login(req, res) {
             path: "/",
             maxAge: 48 * 60 * 60 * 1000,
         });
+        
+        //  console.log(isExistingUser)
 
         return res.status(200).json({
             success: true,
@@ -321,10 +323,11 @@ async function login(req, res) {
 
 async function createAdmin(req, res) {
     try {
-        const { email, password, first_name, last_name, image } = req.body;
+        const { email, password, first_name, last_name} = req.body;
 
         // Check if admin already exists
         const existingAdmin = await AdminModel.findOne({ email });
+
         if (existingAdmin) {
             return res.status(400).json({
                 success: false,
@@ -333,7 +336,7 @@ async function createAdmin(req, res) {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-
+      
         const newAdmin = await AdminModel.create({
             first_name,
             last_name,
@@ -342,12 +345,13 @@ async function createAdmin(req, res) {
             image: `https://api.dicebear.com/5.x/initials/svg?seed=${first_name}${last_name}`,
             role: "Admin"
         });
-
+        
         console.log(newAdmin)
 
         res.status(200).json({
             success: true,
             message: "Admin created successfully!",
+            data:newAdmin,
             admin: newAdmin
         });
 

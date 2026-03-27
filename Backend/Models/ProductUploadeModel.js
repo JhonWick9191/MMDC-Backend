@@ -32,6 +32,6 @@ const excelDataShema = new mongoose.Schema({
   Product_price:Number,
   Vendor_price:Number,
 
-})
+} , { timestamps: true })
 
 module.exports = mongoose.model("exelDataSchema" , excelDataShema)

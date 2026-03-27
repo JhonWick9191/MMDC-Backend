@@ -47,6 +47,6 @@ const productSchema = new mongoose.Schema({
         ref:"UserModel"
     }
 
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model("Products", productSchema)

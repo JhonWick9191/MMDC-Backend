@@ -5,7 +5,7 @@ async function totalProductWithBrands(req, res) {
         // 1️ Total number of products
         const totalProducts = await Products.countDocuments();
 
-        // 2️⃣ Brand-wise product count using aggregation
+        // 2️ - Brand-wise product count using aggregation
         const brandWiseCount = await Products.aggregate([
             {
                 $group: {
@@ -18,7 +18,7 @@ async function totalProductWithBrands(req, res) {
             }
         ]);
 
-        // 3️⃣ Unique SKUs
+        // 3️ Unique SKUs
         const allSkus = await Products.distinct("product_id");
 
         return res.status(200).json({

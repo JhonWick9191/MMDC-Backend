@@ -2,20 +2,45 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
 
-    first_name: { type: String, required: true, trim: true },
-    last_name: { type: String, required: true, trim: true },
-    dateOfBirth:{
-      type:String,
-      required:true,
+    first_name: {
+        type: String,
+        required: true,
+        trim: true
     },
-    phone_number: { type: String, required: true, trim: true },
-    email: { type: String, required: true },
-    password: { type: String, required: true },
-    confrim_password: { type: String, require: true },
-    gst_number: { type: String, require: true },
-    company:{
-     type:String,
-     required:true,
+
+    last_name: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    dateOfBirth: {
+        type: String,
+        required: true,
+    },
+    phone_number: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    confrim_password: {
+        type: String,
+        require: true
+    },
+    gst_number: {
+        type: String,
+        require: true
+    },
+    company: {
+        type: String,
+        required: true,
     },
     role: {
         type: String,
@@ -39,7 +64,9 @@ const userSchema = new mongoose.Schema({
         ref: "Products"
     }],
 
-    // ⭐ ADD THESE FIELDS ONLY ⭐
+
+    //  ADD THESE FIELDS ONLY 
+
     isApproved: {
         type: Boolean,
         default: false,

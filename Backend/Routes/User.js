@@ -24,7 +24,11 @@ const{ deleteOrderProduct} = require("../Controllers/DeleteProduct")
 
 // importing api for get user Details 
 
+// user route for contact us 
 
+const {contactUs} = require("../Controllers/ContactUs")
+
+Router.post("/contact-us",contactUs)
 
 // Signup route 
 Router.post("/signup" , signup);

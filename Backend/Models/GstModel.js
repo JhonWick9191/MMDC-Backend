@@ -8,3 +8,4 @@ const GstSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 module.exports = mongoose.model("GstNumber", GstSchema);
+

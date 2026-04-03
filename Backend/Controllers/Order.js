@@ -8,6 +8,7 @@ async function orderDetails(req, res) {
         const userId = req.user.id;
         const user = req.user.email;
         const { products, totalAmount } = req.body;
+        const userName = req.user.name;
 
 
         if (!products || products.length === 0) {
@@ -77,7 +78,7 @@ async function orderDetails(req, res) {
 
         // email function for order place 
         // console.log(new_order)
-        orderDoneSeandMail(user,new_order)
+        orderDoneSeandMail(user, new_order, { name: userName });
 
 
 

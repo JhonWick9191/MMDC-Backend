@@ -26,9 +26,9 @@ async function mailSender(email, title, body) {
                 html: body
             });
 
-            console.log("✅ Email sent:", info.messageId);
+            console.log(" Email sent:", info.messageId);
         } catch (error) {
-            console.log("⚠️ Email failed (not critical):", error.message);
+            console.log(" Email failed (not critical):", error.message);
         }
     })();
 

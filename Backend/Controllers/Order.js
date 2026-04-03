@@ -1,7 +1,7 @@
 const OrderModel = require("../Models/OrderModel");
 const ProductModel = require("../Models/ProductUploadeModel");
 // importing the mail function 
-const Sendmail = require("../MiddleWares/MailFunction")
+const orderDoneSeandMail = require("../utils/OrderMailSend")
 async function orderDetails(req, res) {
     console.log(req.body);
     try {
@@ -77,7 +77,7 @@ async function orderDetails(req, res) {
 
         // email function for order place 
         // console.log(new_order)
-        Sendmail(user,new_order)
+        orderDoneSeandMail(user,new_order)
 
 
 
